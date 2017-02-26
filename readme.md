@@ -57,11 +57,12 @@ This is the repository for Astral v2. Currently looking for core contributors!
 
 #### With Docker using Laradock
 
-- Fork this repository, clone it recursively including submodules, and `cd` into `laradock` folder
+- Fork this repository, clone it recursively including submodules, and `cd` into `laradock` folder 
 - Execute Docker Compose: `docker-compose up -d nginx mysql redis`
 - Run a terminal inside workspace container: `docker-compose exec workspace bash`
 - Change to `laradock` user: `su laradock`
 - Install the front-end dependencies: `npm install`
+- Install the PHP dependenices: `composer install` and exit container
 - Install the PHP dependencies: `composer install` and exit container
 - Add the local development domain to your hosts file: `your_ip  astralapp.app`
 - Create a new [OAuth Application](https://github.com/settings/developers), and grab the keys it gives you
@@ -74,6 +75,7 @@ This is the repository for Astral v2. Currently looking for core contributors!
 	```
 
 - Fire up the app! Open a browser at [http://astralapp.app/](http://astralapp.app/) and bask in its glory!
+
 
 ### Compiling JavaScript and SCSS Changes
 
