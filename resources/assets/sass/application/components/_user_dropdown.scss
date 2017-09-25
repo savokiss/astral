@@ -7,7 +7,7 @@
 }
 
 .dashboard-userDropdownAvatar {
-  @include size( 40px );
+  width: 40px; height: 40px;
   background: lighten($dark-blue, 30%);
   border-radius: 50%;
   display: inline-block;
@@ -29,6 +29,7 @@
 }
 
 .dashboard-userDropdownMenu {
+  transform: translateX(-50%);
   background: #fff;
   background-clip: padding-box;
   border: 1px solid rgba(#373570, 0.1);
@@ -39,7 +40,7 @@
   z-index: 999;
   &::before {
     transform: translateX(-50%) rotate(45deg);
-    @include size( 12px );
+    width: 12px; height: 12px;
     background: #fff;
     background-clip: padding-box;
     border-top: 1px solid rgba(#373570, 0.1);
@@ -48,13 +49,10 @@
     position: absolute; top: -6px; left: 50%;
     z-index: 99;
   }
-  &-transition {
-    transition: all 250ms $easeOutCubic;
-    transform: translate3d(-50%, 2px, 0) scale(1);
-    opacity: 1;
-    visibility: visible;
+  &-enter-active, &-leave-active {
+    transition: transform 250ms $easeOutCubic, opacity 250ms $easeOutCubic;
   }
-  &-enter, &-leave {
+  &-enter, &-leave-to {
     transform: translate(-50%, -10px) scale(0.95);
     opacity: 0;
     visibility: hidden;
@@ -73,7 +71,7 @@
       border-bottom-right-radius: 3px;
     }
     a {
-      @include size( 100% );
+      width: 100%; height: 100%;
       color: $main-text-color;
       display: block;
       padding: 10px 20px;

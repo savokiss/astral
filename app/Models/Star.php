@@ -2,10 +2,10 @@
 
 namespace Astral\Models;
 
-use Auth;
 use DB;
-use Illuminate\Database\Eloquent\Model;
+use Auth;
 use JWTAuth;
+use Illuminate\Database\Eloquent\Model;
 
 class Star extends Model
 {
@@ -17,7 +17,7 @@ class Star extends Model
      */
     public function user()
     {
-        return $this->belongsTo(\Astral\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -25,7 +25,7 @@ class Star extends Model
      */
     public function tags()
     {
-        return $this->belongsToMany(\Astral\Models\Tag::class);
+        return $this->belongsToMany(Tag::class);
     }
 
     public function removeAllTags()

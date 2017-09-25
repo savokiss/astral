@@ -2,10 +2,10 @@
 
 namespace Astral\Models;
 
-use Astral\TagSlugger;
 use Auth;
-use Illuminate\Database\Eloquent\Model;
 use JWTAuth;
+use Astral\TagSlugger;
+use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
@@ -26,7 +26,7 @@ class Tag extends Model
      */
     public function user()
     {
-        return $this->belongsTo(\Astral\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -34,7 +34,7 @@ class Tag extends Model
      */
     public function stars()
     {
-        return $this->belongsToMany(\Astral\Models\Star::class);
+        return $this->belongsToMany(Star::class);
     }
 
     /**

@@ -2,11 +2,11 @@
 
 namespace Astral\Http\Controllers;
 
-use Astral\Lib\GithubClient;
-use Astral\Models\Star;
-use Astral\Models\Tag;
 use Auth;
 use Cache;
+use Astral\Models\Tag;
+use Astral\Models\Star;
+use Astral\Lib\GithubClient;
 use Illuminate\Http\Request;
 
 class GithubController extends Controller
@@ -26,7 +26,7 @@ class GithubController extends Controller
     {
         $page = (int) $request->input('page', 1);
         $autotag = (bool) $request->input('autotag');
-        $access_token = $request->header('Access-Token');
+        $access_token = Auth::user()->access_token;
         $githubClient = new GithubClient($access_token);
         $stars = $githubClient->getStars($page);
 
@@ -35,7 +35,7 @@ class GithubController extends Controller
 
     public function refreshStars(Request $request)
     {
-        Cache::forget('user_'.Auth::id().'.github_stars');
+        Cache::forget(Auth::user()->starsCacheKey());
 
         return $this->getStars($request);
     }

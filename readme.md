@@ -1,8 +1,9 @@
-## Astral v2
+# Astral
+> Organize your GitHub Stars with ease.
 
-[![Join the chat at https://gitter.im/astralapp/astral](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/astralapp/astral?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/astralapp/astral.svg?branch=riotjs)](https://travis-ci.org/astralapp/astral)
+[![Join the chat at https://gitter.im/astralapp/astral](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/astralapp/astral?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/astralapp/astral.svg?branch=master)](https://travis-ci.org/astralapp/astral) [![ghit.me](https://ghit.me/badge.svg?repo=astralapp/astral)](https://ghit.me/repo/astralapp/astral)
 
-This is the repository for Astral v2. Currently looking for core contributors!
+<a href="https://app.codesponsor.io/link/vSYg5p7VLntutsyxZzPVdCUo/astralapp/astral" rel="nofollow"><img src="https://app.codesponsor.io/embed/vSYg5p7VLntutsyxZzPVdCUo/astralapp/astral.svg" style="width: 888px; height: 68px;" alt="Sponsor" /></a>
 
 ---
 
@@ -11,7 +12,7 @@ This is the repository for Astral v2. Currently looking for core contributors!
 
 - Improved Caching
 - Improved UI/UX
-- Built on Laravel 5.3
+- Built on Laravel 5.4
 - Switched the front-end from AngularJS to VueJS
 
 
@@ -20,7 +21,7 @@ This is the repository for Astral v2. Currently looking for core contributors!
 #### With Homestead
 
 - Fork this repository, clone it, and `cd` into it
-- Install the front-end dependencies: `yarn`
+- Install the front-end dependencies: `yarn` or `npm install`
 - Install the PHP dependenices: `composer install`
 - [Install Homestead](http://laravel.com/docs/homestead#installation-and-setup)
 - Configure Homestead: `homestead edit`
@@ -53,7 +54,7 @@ This is the repository for Astral v2. Currently looking for core contributors!
 	$ php artisan key:generate
 	```
 
-- Fire up the app! Open a browser at [http://astralapp.app/](http://astralapp.app/) and bask in its glory!
+- Fire up the app! Open a browser at [http://astralapp.app/](http://astralapp.app/) and enjoy!
 
 #### With Docker using Laradock
 
@@ -74,15 +75,18 @@ This is the repository for Astral v2. Currently looking for core contributors!
 	$ php artisan key:generate
 	```
 
+<<<<<<< HEAD
 - Fire up the app! Open a browser at [http://astralapp.app/](http://astralapp.app/) and bask in its glory!
 
 
+=======
+>>>>>>> upstream/master
 ### Compiling JavaScript and SCSS Changes
 
 Astral uses JS and SCSS that needs to be transpiled before use. There are various NPM tasks available to you to make this easy.
 
-- When developing you often want to watch files for changes, and re-bundle automatically. You'll want to run either `npm run watch-build` or `gulp watch` (both do the same thing).
-- To get the bundle production ready, run `npm run build-prod`. This will clean out the build folder, and then generate the new production-ready JS and CSS assets.
+- When developing you often want to watch files for changes, and re-bundle automatically. You'll want to run either `npm run watch` or `npm run hot`. The `watch` command is a standard file watcher, and `hot` will give you hot module reloading.
+- To get the bundle production ready, run `npm run production`. This will generate production-ready JS and CSS assets.
 - Consult the `package.json` file for other NPM scripts you can use.
 
 ### Contributing
@@ -90,5 +94,5 @@ Astral uses JS and SCSS that needs to be transpiled before use. There are variou
 - [Get up and running](#getting-up-and-running)
 - Create a new descriptively-named branch
 - Commit your changes and push to your fork.
-- Create a pull request with a clear, well written description of what the PR is all about. You should always run `npm run build-prod` and commit the results before creating the PR.
+- Create a pull request with a clear, well written description of what the PR is all about. You should always run `npm run production` and commit the results before creating the PR.
 - Party!!

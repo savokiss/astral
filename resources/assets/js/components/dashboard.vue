@@ -1,6 +1,7 @@
 <template>
   <div class="dashboard">
     <settings-panel :class="{'active': settingsPanelShowing}"></settings-panel>
+    <patreon-notice :class="{'active': patreonNoticeShowing}"></patreon-notice>
     <dashboard-header></dashboard-header>
     <div class="dashboard-main">
       <dashboard-sidebar></dashboard-sidebar>
@@ -10,88 +11,96 @@
   </div>
 </template>
 <script>
-import ls from "local-storage"
-import { user } from "../store/getters/userGetters"
-import { tags } from "../store/getters/tagsGetters"
-import {
-  fetchUser,
-  setCurrentTag,
-  resetCurrentTag,
-  setTagFilter
-} from "../store/actions"
-import SettingsPanel from "./settings-panel.vue"
-import DashboardHeader from "./dashboard-header.vue"
-import DashboardSidebar from "./dashboard-sidebar.vue"
-import StarList from "./dashboard-star-list.vue"
-import Notifier from "./notifier.vue"
+import { mapGetters, mapActions } from 'vuex'
+import ls from 'local-storage'
+import store from './../store'
+import SettingsPanel from './settings-panel.vue'
+import DashboardHeader from './dashboard-header.vue'
+import DashboardSidebar from './dashboard-sidebar.vue'
+import StarList from './dashboard-star-list.vue'
+import Notifier from './notifier.vue'
+import PatreonNotice from './notices/patreon-notice.vue'
 
 export default {
-  name: "Dashboard",
+  name: 'Dashboard',
   components: {
-    "settings-panel": SettingsPanel,
-    "dashboard-header": DashboardHeader,
-    "dashboard-sidebar": DashboardSidebar,
-    "star-list": StarList,
-    "notifier": Notifier
-  },
-  vuex: {
-    getters: {
-      tags,
-      user: user
-    },
-    actions: {
-      fetchUser,
-      setCurrentTag,
-      setTagFilter,
-      resetCurrentTag
-    }
+    'settings-panel': SettingsPanel,
+    'patreon-notice': PatreonNotice,
+    'dashboard-header': DashboardHeader,
+    'dashboard-sidebar': DashboardSidebar,
+    'star-list': StarList,
+    'notifier': Notifier
   },
   data () {
     return {
       settingsPanelShowing: false
     }
   },
-  ready () {
-    if (ls("jwt")) {
-      this.fetchUser()
-    } else {
-      this.$route.router.go("/auth")
+  computed: {
+    ...mapGetters([
+      'tags',
+      'user'
+    ]),
+    patreonNoticeShowing () {
+      return !this.user.seen_patreon_notice
     }
-    window.addEventListener("keyup", (e) => {
+  },
+  methods: {
+    ...mapActions([
+      'fetchUser',
+      'setCurrentTag',
+      'setTagFilter',
+      'resetCurrentTag'
+    ])
+  },
+  created () {
+    window.addEventListener('keyup', (e) => {
       if (e.keyCode === 27) {
-        this.$root.$broadcast("HIDE_SETTINGS_PANEL")
+        this.$bus.$emit('HIDE_SETTINGS_PANEL')
       }
     })
-  },
-  events: {
-    "SHOW_SETTINGS_PANEL": function () {
-      this.settingsPanelShowing = true
-    },
-    "HIDE_SETTINGS_PANEL": function () {
-      this.settingsPanelShowing = false
-    }
-  },
-  route: {
-    data ({ to }) {
-      if (this.$route.path.match(/^\/dashboard\/untagged/g) !== null) {
+
+    this.$bus.$on('SHOW_SETTINGS_PANEL', () => { this.settingsPanelShowing = true })
+    this.$bus.$on('HIDE_SETTINGS_PANEL', () => { this.settingsPanelShowing = false })
+
+    this.$router.afterEach((to, from) => {
+      if (to.path.match(/^\/dashboard\/untagged/g) !== null) {
         this.resetCurrentTag()
-        this.setTagFilter("UNTAGGED")
+        this.setTagFilter('UNTAGGED')
         return true
       }
       if (this.tags.length) {
-        if (this.$route.params.tag) {
+        if (typeof to.params.tag !== 'undefined') {
           const tag = this.tags.find((tag) => {
-            return tag.slug === this.$route.params.tag
+            return tag.slug === to.params.tag
           })
           if (tag) {
-            this.setTagFilter("TAG")
+            this.setTagFilter('TAG')
             this.setCurrentTag(tag)
+          } else {
+            this.setTagFilter('ALL')
+            this.resetCurrentTag()
           }
         } else {
-          this.setTagFilter("ALL")
+          this.setTagFilter('ALL')
           this.resetCurrentTag()
         }
       }
+    })
+  },
+  beforeRouteEnter (to, from, next) {
+    if (ls('jwt')) {
+      store.dispatch('fetchUser').then((res) => {
+        next()
+      }).catch((error) => {
+        if (error.status === 401 || error.status === 400) {
+          next('/auth')
+        } else {
+          next(false)
+        }
+      })
+    } else {
+      next('/auth')
     }
   }
 }

@@ -15,50 +15,42 @@
       <img :src="user.avatar_url" :alt="user.name" class="dashboard-userDropdownAvatar"/>
       <span class="dashboard-userDropdownName">{{ user.username }}</span>
       <i class="fa fa-chevron-down"></i>
-      <user-dropdown :visible="userDropdownVisible" v-on-clickaway="userDropdownVisible = false"></user-dropdown>
+      <user-dropdown :visible="userDropdownVisible" v-on-clickaway="hideUserDropdown"></user-dropdown>
     </div>
   </div>
 </template>
 <script>
-import { user } from "../store/getters/userGetters"
-import { currentTag, tagFilter } from "../store/getters/tagsGetters"
-import { searchQuery } from "../store/getters/galileoGetters"
-import { setSearchQuery } from "../store/actions"
-import EditTagDropdown from "./edit-tag-dropdown.vue"
-import UserDropdown from "./user-dropdown.vue"
-import { mixin as clickaway } from "vue-clickaway"
+import { mapGetters, mapActions } from 'vuex'
+import EditTagDropdown from './edit-tag-dropdown.vue'
+import UserDropdown from './user-dropdown.vue'
+import { mixin as clickaway } from 'vue-clickaway'
 
 export default {
-  name: "DashboardHeader",
+  name: 'DashboardHeader',
   components: {
-    "edit-tag-dropdown": EditTagDropdown,
-    "user-dropdown": UserDropdown
+    'edit-tag-dropdown': EditTagDropdown,
+    'user-dropdown': UserDropdown
   },
   mixins: [clickaway],
   data () {
     return {
       userDropdownVisible: false,
-      status: "",
+      status: '',
       viewingUntagged: false
     }
   },
-  vuex: {
-    getters: {
-      user: user,
-      currentTag: currentTag,
-      tagFilter,
-      query: searchQuery
-    },
-    actions: {
-      setSearchQuery
-    }
-  },
   computed: {
+    ...mapGetters({
+      user: 'user',
+      currentTag: 'currentTag',
+      tagFilter: 'tagFilter',
+      query: 'searchQuery'
+    }),
     currentTagName () {
       if (Object.keys(this.currentTag).length) {
         return this.currentTag.name
       } else {
-        return this.tagFilter === "UNTAGGED" ? "Untagged" : "All Stars"
+        return this.tagFilter === 'UNTAGGED' ? 'Untagged' : 'All Stars'
       }
     },
     currentSearchQuery: {
@@ -70,17 +62,19 @@ export default {
       }
     }
   },
-  methods: {
-    currentTagExists () {
-      return Boolean(Object.keys(this.currentTag).length)
-    }
+  created () {
+    this.$bus.$on('STATUS', (message) => { this.status = message })
+    this.$bus.$on('IS_VIEWING_UNTAGGED', (isViewing) => { this.viewingUntagged = isViewing })
   },
-  events: {
-    "STATUS": function (message) {
-      this.status = message
+  methods: {
+    ...mapActions([
+      'setSearchQuery'
+    ]),
+    currentTagExists () {
+      return !!Object.keys(this.currentTag).length
     },
-    "IS_VIEWING_UNTAGGED": function (isViewing) {
-      this.viewingUntagged = isViewing
+    hideUserDropdown () {
+      this.userDropdownVisible = false
     }
   }
 }

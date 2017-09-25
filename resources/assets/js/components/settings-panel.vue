@@ -14,17 +14,9 @@
             Automatically adds a tag based on the repo's base language.
           </div> -->
           <div class="settingsPanel-settingControl">
-            <toggle-switch :checked="user.autotag" key="languageAutotag" :change="setUserAutoTagPref"></toggle-switch>
+            <toggle-switch :checked="user.autotag" :ukey="'languageAutotag'" :change="setUserAutoTagPref"></toggle-switch>
           </div>
         </div>
-        <!-- <div class="settingsPanel-row">
-          <div class="settingsPanel-settingName">
-            Use Night Theme&nbsp;&nbsp;<i class="fa fa-moon-o"></i>
-          </div>
-          <div class="settingsPanel-settingControl">
-            <toggle-switch :checked.sync="nightTheme" key="nightTheme"></toggle-switch>
-          </div>
-        </div> -->
         <div class="settingsPanel-row">
           <div class="settingsPanel-settingName">
             Export Stars As JSON
@@ -41,30 +33,33 @@
   </div>
 </template>
 <script>
-import ls from "local-storage"
-import { user } from "../store/getters/userGetters"
-import { setUserAutoTag } from "../store/actions"
-import ToggleSwitch from "./toggle-switch.vue"
+import ls from 'local-storage'
+import { mapActions, mapGetters } from 'vuex'
+import ToggleSwitch from './toggle-switch.vue'
 export default {
-  name: "SettingsPanel",
+  name: 'SettingsPanel',
   components: {
-    "toggle-switch": ToggleSwitch
-  },
-  vuex: {
-    getters: { user },
-    actions: { setUserAutoTag }
+    'toggle-switch': ToggleSwitch
   },
   data () {
     return {
-      exportUrl: `/api/auth/user/exportData?token=${ls("jwt")}`
+      exportUrl: `/api/auth/user/exportData?token=${ls('jwt')}`
     }
   },
+  computed: {
+    ...mapGetters([
+      'user'
+    ])
+  },
   methods: {
+    ...mapActions([
+      'setUserAutoTag'
+    ]),
     setUserAutoTagPref (e) {
       this.setUserAutoTag(e.target.checked)
     },
     closePanel () {
-      this.$root.$broadcast("HIDE_SETTINGS_PANEL")
+      this.$bus.$emit('HIDE_SETTINGS_PANEL')
     }
   }
 }
